@@ -7,8 +7,6 @@
 #include <stdio.h>
 #include <string>
 
-// using namespace antlr4;
-
 int main(int argc, const char *argv[]) {
   auto inputStream = std::make_unique<antlr4::ANTLRInputStream>("hello world");
   auto lexer = std::make_unique<CberLexer>(inputStream.get());
@@ -19,13 +17,5 @@ int main(int argc, const char *argv[]) {
   walker->walk(listener.get(), parser->r());
   std::cout << parser->getATN().toString() << std::endl;
 
-  // JiaLexer lexer = new JiaLexer(inputStream);
-  // CommonTokenStream tokenStream = new CommonTokenStream(lexer);
-
-  // JiaParser parser = new JiaParser(tokenStream);
-  // ParseTreeWalker walker = new ParseTreeWalker();
-  // JiaListener jiaListener = new JiaListener();
-  // walker.walk(jiaListener, parser.expres());
-  // System.out.println(jiaListener.result());
   return 0;
 }
