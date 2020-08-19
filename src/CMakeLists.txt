@@ -1,0 +1,31 @@
+project(Cber)
+
+find_package(Clang REQUIRED)
+
+find_package(ANTLR4 REQUIRED)
+find_package(ANTLR4Runtime REQUIRED)
+
+set(CMAKE_CXX_STANDARD 17)
+
+set(ANTLR_GENERATE_DIR "${PROJECT_SOURCE_DIR}/gen")
+set(GENERATED_ANTLR_SOURCES
+    "${ANTLR_GENERATE_DIR}/${PROJECT_NAME}Lexer.cpp"
+    "${ANTLR_GENERATE_DIR}/${PROJECT_NAME}Parser.cpp"
+    "${ANTLR_GENERATE_DIR}/${PROJECT_NAME}Listener.cpp"
+    "${ANTLR_GENERATE_DIR}/${PROJECT_NAME}BaseListener.cpp" )
+add_custom_command(OUTPUT ${GENERATED_ANTLR_SOURCES}
+  COMMAND ${ANTLR4_EXECUTABLE} -o "${ANTLR_GENERATE_DIR}" -Dlanguage=Cpp "${PROJECT_SOURCE_DIR}/${PROJECT_NAME}.g4"
+  DEPENDS "${PROJECT_SOURCE_DIR}/${PROJECT_NAME}.g4"
+)
+
+# add antrl4cpp artifacts to project environment
+include_directories(
+    ${PROJECT_SOURCE_DIR}
+    "${ANTLR_GENERATE_DIR}"
+    ${ANTLR4RUNTIME_INCLUDE_DIRS}
+    ${CLANG_INCLUDE_DIRS})
+
+aux_source_directory(${PROJECT_SOURCE_DIR} PROJECT_SOURCE_FILES)
+
+add_executable(${PROJECT_NAME} ${PROJECT_SOURCE_FILES} ${GENERATED_ANTLR_SOURCES})
+target_link_libraries(${PROJECT_NAME} ${ANTLR4RUNTIME_LIBRARIES})
